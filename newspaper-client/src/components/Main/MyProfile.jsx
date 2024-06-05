@@ -25,6 +25,8 @@ const MyProfile = () => {
       .then(() => {
         setDp(photo)
         setName(name)
+        setIsOpen(false)
+        toast.success('Profile updated')
       })
       .catch((err) => toast.error(err.message))
   }
