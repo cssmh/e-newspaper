@@ -17,6 +17,7 @@ import ArticleDetails from '../pages/Main/ArticleDetails'
 import { getArticle } from '../api/Article'
 import UpdateArticle from '../pages/Main/UpdateArticle'
 import Subcription from '../pages/Main/Subcription'
+import MyProfile from '../components/Main/MyProfile'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home></Home>,
+      },
+      {
+        path: '/my-profile',
+        element: <MyProfile></MyProfile>,
       },
       {
         path: '/add-article',

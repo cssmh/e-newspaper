@@ -7,9 +7,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
-const stripe = require("stripe")(
-  "sk_test_51OdCcTKaNbqbkdEJNxn4MurcIaccE63SrYF2zoha0cROMRPSfajo7j8fAsVVkSIbES5oNCh1hahtd3lLaOA3wapH00DvLPhBQt"
-);
+const stripe = require("stripe")(`${process.env.PAYMENT_SECRET_KEY}`);
 
 // middleware
 const corsOptions = {
@@ -309,24 +307,23 @@ async function run() {
       res.send({ clientSecret: client_secret });
     });
 
-     // Send a ping to confirm a successful connection
-     await client.db("admin").command({ ping: 1 });
-     console.log(
-       "Pinged your deployment. You successfully connected to MongoDB!"
-     );
-   } finally {
-     // Ensures that the client will close when you finish/error
-     // await client.close();
-   }
- }
- run().catch(console.dir);
- // mongo code end
- 
- app.get("/", (req, res) => {
-   res.send("RUNNING NEWS");
- });
- 
- app.listen(port, () => {
-   console.log(`BREAKING NEWS ON PORT ${port}`);
- });
- 
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+  } finally {
+    // Ensures that the client will close when you finish/error
+    // await client.close();
+  }
+}
+run().catch(console.dir);
+// mongo code end
+
+app.get("/", (req, res) => {
+  res.send("RUNNING NEWS");
+});
+
+app.listen(port, () => {
+  console.log(`BREAKING NEWS ON PORT ${port}`);
+});

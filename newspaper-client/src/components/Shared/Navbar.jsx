@@ -100,15 +100,13 @@ const Navbar = () => {
               {navItems}
             </ul>
           </div>
-
           <Link to={'/'} className="hidden md:block">
             <div className="flex items-center">
               <img src={logo} className="h-14" />
-              <p className='font-semibold'>E-Newspaper</p>
+              <p className="font-semibold">E-Newspaper</p>
             </div>
           </Link>
         </div>
-
         <div className="navbar-center hidden lg:flex ">
           <ul className="menu menu-horizontal px-1 gap-2">{navItems}</ul>
         </div>
@@ -127,10 +125,7 @@ const Navbar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="no img"
-                  src={user?.photoURL || avatarImg}
-                />
+                <img alt="no img" src={user?.photoURL || avatarImg} />
               </div>
             </div>
             <ul
@@ -139,6 +134,11 @@ const Navbar = () => {
             >
               {user ? (
                 <>
+                  <Link to="/my-profile">
+                    <li>
+                      <button>My Profile</button>
+                    </li>
+                  </Link>
                   <li>
                     <button onClick={handleSignOut}>Logout</button>
                   </li>

@@ -4,6 +4,7 @@ import usePublisher from '../../hooks/usePublisher'
 import Creatable from 'react-select/creatable'
 import { useQuery } from '@tanstack/react-query'
 import axiosSecure from '../../api'
+import AllArticlePageCard from './AllArticlePageCard'
 
 const AllArticlePage = () => {
   const [page, setPage] = useState(1)
@@ -34,7 +35,7 @@ const AllArticlePage = () => {
   }
 
   const {
-    data: articles,
+    data: articles = [],
     isLoading,
     isSuccess,
   } = useQuery({
@@ -42,12 +43,10 @@ const AllArticlePage = () => {
     queryFn: getArticle,
   })
 
-  console.log(articles?.data)
-
   return (
     <div className="px-4">
       <Helmet>
-        <title>E-Shop | Buy Your Products</title>
+        <title>E-Newspaper | All Articles</title>
       </Helmet>
 
       {/* banner */}
@@ -104,7 +103,6 @@ const AllArticlePage = () => {
                 ))}
               </select>
             </div>
-
             <div>
               <Creatable
                 required
@@ -118,6 +116,11 @@ const AllArticlePage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-6">
+        {articles?.data?.result?.map((art) => (
+          <AllArticlePageCard key={art._id} article={art}></AllArticlePageCard>
+        ))}
       </div>
     </div>
   )
