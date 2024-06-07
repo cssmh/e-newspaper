@@ -7,7 +7,9 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
-const stripe = require("stripe")(`${process.env.PAYMENT_SECRET_KEY}`);
+const stripe = require("stripe")(
+  "sk_test_51OdCcTKaNbqbkdEJNxn4MurcIaccE63SrYF2zoha0cROMRPSfajo7j8fAsVVkSIbES5oNCh1hahtd3lLaOA3wapH00DvLPhBQt"
+);
 
 // middleware
 const corsOptions = {
@@ -38,7 +40,7 @@ const verifyToken = async (req, res, next) => {
 
 // mongodb config
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ae0fypv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.gwyyl9m.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -133,7 +135,7 @@ async function run() {
         const options = { upsert: true };
         const updateDoc = {
           $set: {
-            isPremimum: false,
+            isPremium: false,
           },
         };
         const result = await userCollection.updateOne(
@@ -145,11 +147,27 @@ async function run() {
       }
     });
 
-    // get role
+    // get user data and role
     app.get("/user/:email", async (req, res) => {
       const email = req.params.email;
-      const result = await userCollection.findOne({ email });
-      res.send(result);
+      let user = await userCollection.findOne({ email });
+      if (Date.now() > user.premiumTaken) {
+        const filter = { email: user.email };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: {
+            premiumTaken: null,
+            isPremium: false,
+          },
+        };
+        const result = await userCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+      }
+      user = await userCollection.findOne({ email });
+      res.send(user);
     });
 
     // get all users
@@ -169,6 +187,17 @@ async function run() {
         total,
         result,
       });
+    });
+
+    // count user:
+    app.get("/count-user", async (req, res) => {
+      const totalUser = await userCollection.countDocuments({ role: "user" });
+      const normalUser = await userCollection.countDocuments({
+        role: "user",
+        isPremium: false,
+      });
+      const premiumUser = totalUser - normalUser;
+      res.send({ totalUser, normalUser, premiumUser });
     });
 
     // get all publishers:
@@ -194,40 +223,92 @@ async function run() {
     });
 
     // all articles:
+    // app.get("/articles", async (req, res) => {
+    //   let query = {};
+    //   const page = parseInt(req.query.page);
+    //   const limit = parseInt(req.query.limit);
+    //   let status = req.query.status;
+    //   let isPremium = req.query.isPremium;
+    //   let searchTerm = req.query.searchTerm;
+    //   let publisher = req.query.publisher;
+    //   let tags = req.query.tags;
+    //   const email = req.query.email;
+    //   // query.isPremium = isPremium;
+    //   if (status === "null") {
+    //     status = "";
+    //   }
+    //   if (status) {
+    //     query.status = status;
+    //   }
+
+    //   if (publisher === "All") {
+    //     publisher = "";
+    //   }
+    //   if (publisher !== 'All') {
+    //     query.publisher = publisher;
+    //   }
+    //   if (tags) {
+    //     const tagsArray = req.query.tags.split(",");
+    //     query.tags = { $all: [...tagsArray] };
+    //   }
+    //   if (searchTerm) {
+    //     query.name = { $regex: new RegExp(searchTerm, "i") };
+    //   }
+    //   if (email) {
+    //     query.email = email;
+    //   }
+
+    //   const skip = (page - 1) * limit;
+    //   const result = await articleCollection
+    //     .find(query)
+    //     .sort({ createAt: -1 })
+    //     .skip(skip)
+    //     .limit(limit)
+    //     .toArray();
+    //   const total = await articleCollection.countDocuments(query);
+    //   res.send({
+    //     total,
+    //     result,
+    //   });
+    // });
+
+    // all article:
     app.get("/articles", async (req, res) => {
       let query = {};
       const page = parseInt(req.query.page);
       const limit = parseInt(req.query.limit);
+      const skip = (page - 1) * limit;
+      let email = req.query.email;
       let status = req.query.status;
+      let tags = req.query.tags;
       let searchTerm = req.query.searchTerm;
       let publisher = req.query.publisher;
-      let tags = req.query.tags;
-      const email = req.query.email;
-      if (status === "null") {
-        status = "";
+      let isPremium = req.query.isPremium;
+      if (email) {
+        query.email = email;
       }
       if (status) {
         query.status = status;
       }
+      if (tags) {
+        const tagsArray = req.query.tags.split(",");
+        query.tags = { $all: [...tagsArray] };
+      }
 
-      console.log(publisher);
+      if (searchTerm) {
+        query.name = { $regex: new RegExp(searchTerm, "i") };
+      }
+
       if (publisher === "All") {
         publisher = "";
       }
       if (publisher) {
         query.publisher = publisher;
       }
-      if (tags) {
-        const tagsArray = req.query.tags.split(",");
-        query.tags = { $all: [...tagsArray] };
+      if (isPremium) {
+        query.isPremium = isPremium;
       }
-      if (searchTerm) {
-        query.name = { $regex: new RegExp(searchTerm, "i") };
-      }
-      if (email) {
-        query.email = email;
-      }
-      const skip = (page - 1) * limit;
+
       const result = await articleCollection
         .find(query)
         .sort({ createAt: -1 })

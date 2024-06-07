@@ -7,15 +7,33 @@ import { deleteArticle, updateArticle } from '../../api/Article'
 import toast from 'react-hot-toast'
 import DeclineModal from '../../components/Dashboard/DeclineModal'
 import Swal from 'sweetalert2'
+import axiosSecure from '../../api'
+import { useQuery } from '@tanstack/react-query'
 
 const AllArticles = () => {
   const [page, setPage] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const [item, setItem] = useState({})
   const [loading, setLoading] = useState(false)
-  const limit = 6
-  const [articles, refetch, isLoading, isSuccess] = useArticle(page, limit)
-  console.log(articles?.result)
+  const limit = 10
+
+  const getArticle = async () => {
+    const res = await axiosSecure.get(
+      `/articles?page=${page}&limit=${limit}`,
+    )
+    return res
+  }
+  const {
+    data: articles,
+    isLoading,
+    isSuccess,
+    refetch,
+  } = useQuery({
+    queryKey: ['article', page, limit],
+    queryFn: getArticle,
+  })
+
+  console.log(articles?.data?.result);
 
   const handlePublish = async (id) => {
     const result = await updateArticle(id, { status: 'approved' })
@@ -81,7 +99,7 @@ const AllArticles = () => {
   }
 
   const handlePremium = async (id) => {
-    const result = await updateArticle(id, { isPremium: true })
+    const result = await updateArticle(id, { isPremium: 'yes' })
     if (result?.modifiedCount > 0) {
       refetch()
       toast.success('Article mark as Premium')
@@ -93,7 +111,7 @@ const AllArticles = () => {
   return (
     <div className="container mx-auto px-4 sm:px-8">
       <Helmet>
-        <title>E Shop | Users</title>
+        <title>E-Newspaper | All Article</title>
       </Helmet>
       {isLoading ? (
         <Loader></Loader>
@@ -161,7 +179,7 @@ const AllArticles = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {articles.result.map((item, index) => (
+                  {articles?.data?.result.map((item, index) => (
                     <AllArticleDataRow
                       key={item._id}
                       item={item}
@@ -188,7 +206,7 @@ const AllArticles = () => {
             >
               «
             </button>
-            {[...Array(Math.ceil(articles?.total / limit)).keys()].map(
+            {[...Array(Math.ceil(articles?.data?.total / limit)).keys()].map(
               (ele) => {
                 return (
                   <button
@@ -206,7 +224,7 @@ const AllArticles = () => {
 
             <button
               onClick={() => setPage((old) => old + 1)}
-              disabled={page === Math.ceil(articles?.total / limit)}
+              disabled={page === Math.ceil(articles?.data?.total / limit)}
               className={`${Pginetionclass} disabled:bg-green-100`}
             >
               »
@@ -225,6 +243,7 @@ const AllArticles = () => {
         ></DeclineModal>
       }
     </div>
+ 
   )
 }
 

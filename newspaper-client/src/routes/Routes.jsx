@@ -17,7 +17,8 @@ import ArticleDetails from '../pages/Main/ArticleDetails'
 import { getArticle } from '../api/Article'
 import UpdateArticle from '../pages/Main/UpdateArticle'
 import Subcription from '../pages/Main/Subcription'
-import MyProfile from '../components/Main/MyProfile'
+import PremiumArticle from '../pages/Main/PremiumArticle'
+import MyProfile from '../pages/Main/MyProfile'
 
 const router = createBrowserRouter([
   {
@@ -27,10 +28,6 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home></Home>,
-      },
-      {
-        path: '/my-profile',
-        element: <MyProfile></MyProfile>,
       },
       {
         path: '/add-article',
@@ -53,6 +50,14 @@ const router = createBrowserRouter([
       {
         path: '/my-article',
         element: <MyArticle></MyArticle>,
+      },
+      {
+        path: '/my-profile',
+        element: <MyProfile></MyProfile>
+      },
+      {
+        path: '/premium-article',
+        element: <PremiumArticle></PremiumArticle>,
       },
       {
         path: '/subcription',

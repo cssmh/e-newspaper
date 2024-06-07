@@ -9,16 +9,16 @@ const AllPublishers = () => {
       return res?.data
     },
   })
-
+  
   return (
-    <div className="mb-10">
+    <div className="my-10">
       <h1 className="text-2xl text-center mb-4">All Publishers</h1>
       <div className="flex max-w-[1200px] mx-auto space-x-3">
         {publishers?.map((pub) => (
           <div key={pub._id}>
             <img
-              src={pub?.photoURL}
-              className="rounded-full w-[60px] mx-auto"
+              src={pub?.image}
+              className="rounded-full w-[64px] mx-auto"
               alt=""
             />
             <p>{pub.name}</p>

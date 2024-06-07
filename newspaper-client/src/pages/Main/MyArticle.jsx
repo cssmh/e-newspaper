@@ -8,6 +8,8 @@ import Swal from 'sweetalert2'
 import { deleteArticle } from '../../api/Article'
 import toast from 'react-hot-toast'
 import DeclineMessageModal from '../../components/Main/DeclineMessageModal'
+import axiosSecure from '../../api'
+import { useQuery } from '@tanstack/react-query'
 
 const MyArticle = () => {
   const { user } = useAuth()
@@ -15,12 +17,25 @@ const MyArticle = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [item, setItem] = useState({})
   const [loading, setLoading] = useState(false)
-  const limit = 6
-  const [articles, refetch, isLoading, isSuccess] = useArticle(
-    page,
-    limit,
-    user?.email,
-  )
+  const limit = 10
+  
+  const getArticle = async () => {
+    const res = await axiosSecure.get(
+      `/articles?page=${page}&limit=${limit}&email=${user.email}`,
+    )
+    return res
+  }
+
+  const {
+    data: articles,
+    isLoading,
+    isSuccess,
+    refetch,
+  } = useQuery({
+    queryKey: ['article', page, limit],
+    queryFn: getArticle,
+  })
+
 
 
   const handleShow = async (item) => {
@@ -59,7 +74,7 @@ const MyArticle = () => {
   return (
     <div className="container mx-auto px-4 sm:px-8">
       <Helmet>
-        <title>E Shop | Users</title>
+        <title>E-Newspaper | Users</title>
       </Helmet>
       {isLoading ? (
         <Loader></Loader>
@@ -115,7 +130,7 @@ const MyArticle = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {articles.result.map((item, index) => (
+                  {articles?.data?.result.map((item, index) => (
                     <MyArticleDataRow
                       key={item._id}
                       item={item}
@@ -141,7 +156,7 @@ const MyArticle = () => {
               >
                 «
               </button>
-              {[...Array(Math.ceil(articles?.total / limit)).keys()].map(
+              {[...Array(Math.ceil(articles?.data?.total / limit)).keys()].map(
                 (ele) => {
                   return (
                     <button
@@ -159,7 +174,7 @@ const MyArticle = () => {
   
               <button
                 onClick={() => setPage((old) => old + 1)}
-                disabled={page === Math.ceil(articles?.total / limit)}
+                disabled={page === Math.ceil(articles?.data?.total / limit)}
                 className={`${Pginetionclass} disabled:bg-green-100`}
               >
                 »
@@ -181,6 +196,7 @@ const MyArticle = () => {
         
       }
     </div>
+    
   )
 }
 

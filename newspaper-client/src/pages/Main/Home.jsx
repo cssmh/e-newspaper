@@ -5,6 +5,8 @@ import Latest from '../../components/Main/Latest'
 import AllPublishers from './AllPublishers'
 import Plans from './Plans'
 import Statistics from './Statistics'
+import { Contact } from '../../components/Main/Contact'
+import Newsletter from '../../components/Main/Newsletter'
 
 const Home = () => {
   return (
@@ -16,6 +18,8 @@ const Home = () => {
       <ArticleSlider />
       <AllPublishers />
       <Statistics />
+      <Contact></Contact>
+      <Newsletter></Newsletter>
       <Plans />
     </div>
   )

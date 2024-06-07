@@ -9,7 +9,7 @@ import ArticleSliderCard from './ArticleSliderCard'
 
 const ArticleSlider = () => {
   const {
-    data: articles =[],
+    data: articles,
     isLoading,
   } = useQuery({
     queryKey: ['article'],
@@ -26,6 +26,8 @@ const ArticleSlider = () => {
   return (
     <div>
       <Swiper
+        // data-aos="fade-up"
+        // data-aos-delay="600"
         speed={1000}
         grabCursor={true}
         autoplay={{

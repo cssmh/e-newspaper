@@ -4,6 +4,7 @@ import usePublisher from '../../hooks/usePublisher'
 import Creatable from 'react-select/creatable'
 import { useQuery } from '@tanstack/react-query'
 import axiosSecure from '../../api'
+import Loader from '../../components/Shared/Loader'
 import AllArticlePageCard from './AllArticlePageCard'
 
 const AllArticlePage = () => {
@@ -29,13 +30,13 @@ const AllArticlePage = () => {
 
   const getArticle = async () => {
     const res = await axiosSecure.get(
-      `/articles?page=${page}&limit=${limit}&tags=${tags}&searchTerm=${searchTerm}&publisher=${publisher}`,
+      `/articles?page=${page}&limit=${limit}&status=approved&tags=${tags}&searchTerm=${searchTerm}&publisher=${publisher}`,
     )
     return res
   }
 
   const {
-    data: articles = [],
+    data: articles,
     isLoading,
     isSuccess,
   } = useQuery({
@@ -43,10 +44,12 @@ const AllArticlePage = () => {
     queryFn: getArticle,
   })
 
+  const Pginetionclass =
+    'join-item  btn text-lg font-bold hover:bg-green-600 hover:text-white font-Montserrat bg-green-200'
   return (
     <div className="px-4">
       <Helmet>
-        <title>E-Newspaper | All Articles</title>
+        <title>E-Newspaper | Find Your news</title>
       </Helmet>
 
       {/* banner */}
@@ -56,11 +59,11 @@ const AllArticlePage = () => {
         data-aos-delay="400"
       >
         <h2
-          className=" text-2xl text-center ml-2 sm:ml-0 lg:text-5xl font-bold text-green-600 pt-10"
+          className=" text-2xl text-center ml-2 sm:ml-0 lg:text-5xl font-bold text-yellow-600 pt-10"
           data-aos="fade-down"
           data-aos-delay="400"
         >
-          Find Your Desired Product
+          Find Your Desired News
         </h2>
         <div
           className="flex  justify-center pt-8 items-center"
@@ -103,6 +106,7 @@ const AllArticlePage = () => {
                 ))}
               </select>
             </div>
+
             <div>
               <Creatable
                 required
@@ -117,11 +121,57 @@ const AllArticlePage = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-6">
-        {articles?.data?.result?.map((art) => (
-          <AllArticlePageCard key={art._id} article={art}></AllArticlePageCard>
-        ))}
-      </div>
+
+      {/* product card show here */}
+      {/* map using  articles?.data?.result   */}
+      {isLoading ? (
+        <Loader></Loader>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-6">
+          {articles?.data?.result?.map((art) => (
+            <AllArticlePageCard
+              key={art._id}
+              article={art}
+            ></AllArticlePageCard>
+          ))}
+        </div>
+      )}
+      {isSuccess && (
+        <div className="paginetion flex mb-20">
+          <div className="join border-green-300 border mx-auto ">
+            <button
+              onClick={() => setPage((old) => old - 1)}
+              disabled={1 === page}
+              className={`${Pginetionclass} disabled:bg-green-100`}
+            >
+              «
+            </button>
+            {[...Array(Math.ceil(articles?.data?.total / limit)).keys()].map(
+              (ele) => {
+                return (
+                  <button
+                    onClick={() => setPage(ele + 1)}
+                    key={ele + 1}
+                    className={`${Pginetionclass} ${
+                      ele + 1 === parseInt(page) ? 'bg-yellow-300' : ''
+                    } `}
+                  >
+                    {ele + 1}
+                  </button>
+                )
+              },
+            )}
+
+            <button
+              onClick={() => setPage((old) => old + 1)}
+              disabled={page === Math.ceil(articles?.data?.total / limit)}
+              className={`${Pginetionclass} disabled:bg-green-100`}
+            >
+              »
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

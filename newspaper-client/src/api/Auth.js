@@ -8,8 +8,9 @@ export const saveUser = async (user, status) => {
     role: 'user',
     image: user.photoURL,
     name: user?.displayName,
+    premiumTaken : null,
     isPremium : false,
-    expiryDate:0
+    // expiryDate:0
   }
 
   const { data } = await axiosSecure.put(`/users/${user?.email}`, currentUser)

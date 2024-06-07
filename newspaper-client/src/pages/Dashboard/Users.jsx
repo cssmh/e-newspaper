@@ -9,7 +9,7 @@ import { updateUser } from '../../api/Auth'
 
 const Users = () => {
   const [page, setpage] = useState(1)
-  const limit = 2
+  const limit = 10
 
   const getUsers = async () => {
     const res = await axiosSecure.get(`/users?page=${page}&limit=${limit}`)

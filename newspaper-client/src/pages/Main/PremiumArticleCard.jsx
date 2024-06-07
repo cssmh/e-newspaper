@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const ArticleSliderCard = ({ getArticle }) => {
+const PremiumArticleCard = ({ article }) => {
   const {
     _id,
     title,
@@ -10,27 +10,24 @@ const ArticleSliderCard = ({ getArticle }) => {
     author,
     author_image,
     viewCount,
-    isPremium,
-  } = getArticle
+  } = article
 
   return (
-    <div
-      className={`${isPremium ? 'dark:bg-emerald-700' : 'dark:bg-gray-800'} max-w-2xl overflow-hidden bg-white rounded-md shadow-md mt-4`}
-    >
+    <div className="dark:bg-emerald-700 max-w-2xl overflow-hidden bg-white rounded-md shadow-md">
       <img className="object-cover w-full h-56" src={image} alt="Article" />
       <div className="p-6">
         <div>
-          <span className="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">
-            #{tags}
+          <span className="text-xs font-medium text-blue-600 uppercase dark:text-blue-400 flex gap-2">
+            {tags?.map((tag, idx) => (
+              <p key={idx}>#{tag}</p>
+            ))}
           </span>
-          <a
-            href="#"
-            className="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+          <p
+            className="block mt-2 text-xl font-semibold text-white transition-colors duration-300 transform"
             tabIndex="0"
-            role="link"
           >
             {title}
-          </a>
+          </p>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {description}
           </p>
@@ -67,4 +64,4 @@ const ArticleSliderCard = ({ getArticle }) => {
   )
 }
 
-export default ArticleSliderCard
+export default PremiumArticleCard

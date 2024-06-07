@@ -7,13 +7,14 @@ import axiosSecure from '../../api'
 
 const Statistics = () => {
   const { ref, inView } = useInView({ triggerOnce: true })
-  const { data: publishers = [] } = useQuery({
-    queryKey: ['publishers'],
+  const { data: allUser = [] } = useQuery({
+    queryKey: ['allUser'],
     queryFn: async () => {
-      const res = await axiosSecure.get('/publishers')
+      const res = await axiosSecure.get('/count-user')
       return res?.data
     },
   })
+  const { normalUser, premiumUser, totalUser } = allUser;
 
   return (
     <div
@@ -35,9 +36,7 @@ const Statistics = () => {
               All Users
             </p>
             <p className="text-gray-600">
-              {inView && (
-                <CountUp end={publishers?.length + 10 || 0} duration={3} />
-              )}
+              {inView && <CountUp end={totalUser || 0} duration={3} />}
             </p>
           </div>
           <div>
@@ -49,7 +48,7 @@ const Statistics = () => {
               Normal Users
             </p>
             <p className="text-gray-600">
-              {inView && <CountUp end={publishers?.length + 51} duration={3} />}
+              {inView && <CountUp end={normalUser || 0} duration={3} />}
             </p>
           </div>
           <div>
@@ -62,10 +61,7 @@ const Statistics = () => {
             </p>
             <p className="text-gray-600">
               {inView && (
-                <CountUp
-                  end={publishers.length == 0 ? 0 : publishers.length}
-                  duration={3}
-                />
+                <CountUp end={premiumUser || 0} duration={3} />
               )}
             </p>
           </div>
