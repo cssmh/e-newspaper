@@ -93,6 +93,29 @@ async function run() {
       }
     });
 
+    app.get("/chart", async (req, res) => {
+      try {
+        const publishers = await publisherCollection.find().toArray();
+        const publisherNames = publishers.map((pub) => pub?.name);
+        const articles = await articleCollection
+          .find({
+            status: "approved",
+            publisher: { $in: publisherNames },
+          })
+          .toArray();
+
+        const articleCounts = publisherNames?.map((publisher) => {
+          const count = articles.filter(
+            (article) => article?.publisher === publisher
+          ).length;
+          return { publisher, count };
+        });
+        res.send(articleCounts);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
     // save user in db
     app.put("/users/:email", async (req, res) => {
       const email = req.params.email;

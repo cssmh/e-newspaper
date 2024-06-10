@@ -23,61 +23,61 @@ import MyProfile from '../pages/Main/MyProfile'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout></MainLayout>,
+    element: <MainLayout />,
     children: [
       {
         path: '/',
-        element: <Home></Home>,
+        element: <Home />,
       },
       {
         path: '/add-article',
-        element: <AddArticle></AddArticle>,
+        element: <AddArticle />,
       },
       {
         path: '/all-article',
-        element: <AllArticlePage></AllArticlePage>,
+        element: <AllArticlePage />,
       },
       {
         path: '/article/:id',
-        element: <ArticleDetails></ArticleDetails>,
+        element: <ArticleDetails />,
         loader: ({ params }) => getArticle(params.id),
       },
       {
         path: '/update-article/:id',
-        element: <UpdateArticle></UpdateArticle>,
+        element: <UpdateArticle />,
         loader: ({ params }) => getArticle(params.id),
       },
       {
         path: '/my-article',
-        element: <MyArticle></MyArticle>,
+        element: <MyArticle />,
       },
       {
         path: '/my-profile',
-        element: <MyProfile></MyProfile>
+        element: <MyProfile />,
       },
       {
         path: '/premium-article',
-        element: <PremiumArticle></PremiumArticle>,
+        element: <PremiumArticle />,
       },
       {
         path: '/subcription',
-        element: <Subcription></Subcription>,
+        element: <Subcription />,
       },
     ],
   },
   {
     path: '/signup',
-    element: <SignUp></SignUp>,
+    element: <SignUp />,
   },
   {
     path: '/login',
-    element: <Login></Login>,
+    element: <Login />,
   },
   {
     path: '/dashboard',
     element: (
       <PrivateRoutes>
-        <DashboardLayout></DashboardLayout>
+        <DashboardLayout />
       </PrivateRoutes>
     ),
     children: [
@@ -85,32 +85,32 @@ const router = createBrowserRouter([
         path: '/dashboard',
         element: (
           <PrivateRoutes>
-            <Dashboard></Dashboard>
+            <Dashboard />
           </PrivateRoutes>
         ),
       },
       {
-        path: 'users',
+        path: '/dashboard/users',
         element: (
           <PrivateRoutes>
-            <Users></Users>
+            <Users />
           </PrivateRoutes>
         ),
       },
       {
-        path: 'allarticle',
+        path: '/dashboard/allarticle',
         element: (
           <PrivateRoutes>
-            <AllArticles></AllArticles>
+            <AllArticles />
           </PrivateRoutes>
         ),
       },
       {
-        path: 'add-publisher',
+        path: '/dashboard/add-publisher',
         element: (
           <PrivateRoutes>
             <AdminRoutes>
-              <AddPublisher></AddPublisher>
+              <AddPublisher />
             </AdminRoutes>
           </PrivateRoutes>
         ),

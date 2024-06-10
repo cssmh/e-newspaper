@@ -18,7 +18,7 @@ const AllPublishers = () => {
           <div key={pub._id}>
             <img
               src={pub?.image}
-              className="rounded-full w-[64px] mx-auto"
+              className="rounded-full w-[60px] mx-auto"
               alt=""
             />
             <p>{pub.name}</p>
