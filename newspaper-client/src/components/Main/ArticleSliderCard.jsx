@@ -32,7 +32,7 @@ const ArticleSliderCard = ({ getArticle }) => {
             {title}
           </a>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {description}
+            {description.slice(0, 90)}
           </p>
         </div>
         <div className="mt-4">
