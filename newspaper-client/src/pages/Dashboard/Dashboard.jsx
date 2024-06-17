@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 
 const Dashboard = () => {
   const {
-    data: chartData,
+    data: chartData,  
     isLoading,
   } = useQuery({
     queryKey: ['article'],
