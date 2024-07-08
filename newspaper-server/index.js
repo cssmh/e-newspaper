@@ -7,9 +7,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
-const stripe = require("stripe")(
-  "sk_test_51OdCcTKaNbqbkdEJNxn4MurcIaccE63SrYF2zoha0cROMRPSfajo7j8fAsVVkSIbES5oNCh1hahtd3lLaOA3wapH00DvLPhBQt"
-);
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 
 // middleware
 const corsOptions = {
