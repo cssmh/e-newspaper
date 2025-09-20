@@ -18,8 +18,8 @@ const Home = () => {
       <ArticleSlider />
       <AllPublishers />
       <Statistics />
-      <Contact></Contact>
-      <Newsletter></Newsletter>
+      <Contact />
+      <Newsletter />
       <Plans />
     </div>
   )
